@@ -16,7 +16,7 @@ class Campaign(models.Model):
     end = models.DateTimeField(null=True)
     recurrence = RecurrenceField()
 
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=False)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
