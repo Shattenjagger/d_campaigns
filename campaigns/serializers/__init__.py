@@ -1,0 +1,1 @@
+from .campaign_serializer import CampaignSerializer
