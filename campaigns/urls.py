@@ -1,10 +1,11 @@
 from django.conf.urls import include, url
 from rest_framework import routers
 
-from campaigns.views import CampaignViewSet
+from campaigns.views import CampaignViewSet, CustomActionViewSet
 
 router = routers.DefaultRouter()
 router.register(r'campaigns', CampaignViewSet, base_name='campaigns')
+router.register(r'custom_actions', CustomActionViewSet, base_name='custom_actions')
 
 campaigns_activate = CampaignViewSet.as_view({
     'get': 'activate'
