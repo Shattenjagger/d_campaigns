@@ -179,9 +179,19 @@ class CampaignViewSetTests(APITestCase):
         assert r.status_code == 404
 
     def test_should_activate(self):
+        o = Campaign.objects.get(pk=self.user1_campaigns[0].id)
+        o.recurrence.rrules = [recurrence.Rule(
+            recurrence.SECONDLY,
+            interval=5
+        ), ]
+        o.save()
+
         self.client.force_login(user=self.user1)
         r = self.client.get('/api/campaigns/%s/activate/' % self.user1_campaigns[0].id)
         assert r.status_code == 200
+
+        o = Campaign.objects.get(pk=self.user1_campaigns[0].id)
+        assert o.active
 
         r = self.client.get('/api/campaigns/%s/activate/' % self.user2_campaigns[0].id)
         assert r.status_code == 404
@@ -190,6 +200,9 @@ class CampaignViewSetTests(APITestCase):
         self.client.force_login(user=self.user1)
         r = self.client.get('/api/campaigns/%s/deactivate/' % self.user1_campaigns[0].id)
         assert r.status_code == 200
+
+        o = Campaign.objects.get(pk=self.user1_campaigns[0].id)
+        assert not o.active
 
         r = self.client.get('/api/campaigns/%s/deactivate/' % self.user2_campaigns[0].id)
         assert r.status_code == 404
