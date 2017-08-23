@@ -128,3 +128,6 @@ CELERY_REDBEAT_REDIS_URL = 'redis://localhost:6379/2'
 CELERY_BEAT_MAX_LOOP_INTERVAL = 5
 
 ES_CLUSTER = 'http://localhost:9200/'
+ES_TYPE = 'external'
+ES_CAMPAIGN_SUBSCRIBERS_IDX = 'campaign_subscribers_idx'
+ES_CUSTOM_ACTION_SUBSCRIBERS_IDX = 'custom_action_subscribers_idx'

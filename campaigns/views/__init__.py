@@ -1,2 +1,3 @@
 from .campaign_viewset import CampaignViewSet
 from .custom_action_viewset import CustomActionViewSet
+from .recurrent_subscribers_viewset import RecurrentSubscribersViewSet
