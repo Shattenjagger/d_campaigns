@@ -4,6 +4,7 @@ from campaigns.models import Campaign
 
 class CampaignSerializer(serializers.ModelSerializer):
     active = serializers.BooleanField(read_only=True)
+    rule = serializers.CharField()
 
     class Meta:
         model = Campaign
@@ -13,7 +14,7 @@ class CampaignSerializer(serializers.ModelSerializer):
             'description',
             'start',
             'end',
-            'recurrence',
+            'rule',
             'active',
             'created',
             'modified'
