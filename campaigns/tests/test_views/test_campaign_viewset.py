@@ -137,13 +137,11 @@ class CampaignViewSetTests(APITestCase):
             "start": timezone.now(),
             "rule": serialize(r_rule)
         }
-        print(obj)
 
         self.client.force_login(user=self.user1)
         r = self.client.post('/api/campaigns/', data=obj)
 
         t = r.json()
-        print(t)
         assert t['name'] == obj['name']
 
         o = Campaign.objects.get(pk=t['id'])
