@@ -3,6 +3,18 @@ from campaigns.models import Campaign
 
 
 class CampaignSerializer(serializers.ModelSerializer):
+    active = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = Campaign
-        fields = '__all__'
+        fields = [
+            'id',
+            'name',
+            'description',
+            'start',
+            'end',
+            'recurrence',
+            'active',
+            'created',
+            'modified'
+        ]

@@ -1,9 +1,10 @@
-from datetime import datetime
-
+import celery
 import recurrence
-import json
 from django.contrib.auth import get_user_model
+from django.test import override_settings
 from django.utils import timezone
+from recurrence import serialize
+from redbeat import RedBeatSchedulerEntry
 from rest_framework.test import APITestCase
 
 from campaigns.models import Campaign
@@ -54,24 +55,82 @@ class CampaignViewSetTests(APITestCase):
             recurrence.DAILY
         )
 
-        pattern = recurrence.Recurrence(
-            dtstart=datetime(2014, 1, 2, 0, 0, 0),
-            dtend=datetime(2014, 1, 3, 0, 0, 0),
-            rrules=[r_rule, ]
-        )
+        pattern = recurrence.Recurrence(rrules=[r_rule, ])
 
         obj = {
             "name": "My super awesome campaign",
             "description": "Super-cool campaign",
             "start": timezone.now(),
-            "recurrence": pattern
+            "recurrence": serialize(pattern)
         }
-
-        print(json.dumps(obj))
 
         self.client.force_login(user=self.user1)
         r = self.client.post('/api/campaigns/', data=obj)
-        print(r.content)
+
+        t = r.json()
+        assert t['name'] == obj['name']
+
+        o = Campaign.objects.get(pk=t['id'])
+        assert o.owner == self.user1
+
+    def test_should_get_by_id(self):
+        self.client.force_login(user=self.user1)
+        r = self.client.get('/api/campaigns/%s/' % self.user1_campaigns[0].id)
+        assert r.status_code == 200
+
+        r = self.client.get('/api/campaigns/%s/' % self.user2_campaigns[0].id)
+        assert r.status_code == 404
+
+    def test_should_edit_campaign(self):
+        new_name = 'Campaign edited'
+        o = {
+            "name": new_name
+        }
+        self.client.force_login(user=self.user1)
+        r = self.client.patch('/api/campaigns/%s/' % self.user1_campaigns[0].id, data=o)
+        assert r.status_code == 200
+        assert r.json()['name'] == new_name
+
+        r = self.client.patch('/api/campaigns/%s/' % self.user2_campaigns[0].id, data=o)
+        assert r.status_code == 404
+
+    def test_should_delete_campaign(self):
+        self.client.force_login(user=self.user1)
+        r = self.client.delete('/api/campaigns/%s/' % self.user1_campaigns[0].id)
+        assert r.status_code == 204
+
+        r = self.client.delete('/api/campaigns/%s/' % self.user1_campaigns[0].id)
+        assert r.status_code == 404
+
+    def test_should_activate(self):
+        self.client.force_login(user=self.user1)
+        r = self.client.get('/api/campaigns/%s/activate/' % self.user1_campaigns[0].id)
+        assert r.status_code == 200
+
+        r = self.client.get('/api/campaigns/%s/activate/' % self.user2_campaigns[0].id)
+        assert r.status_code == 404
+
+    def test_should_deactivate(self):
+        self.client.force_login(user=self.user1)
+        r = self.client.get('/api/campaigns/%s/deactivate/' % self.user1_campaigns[0].id)
+        assert r.status_code == 200
+
+        r = self.client.get('/api/campaigns/%s/deactivate/' % self.user2_campaigns[0].id)
+        assert r.status_code == 404
+
+    # @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
+    # def test_redbeat(self):
+    #     from d_campaigns import celery_app
+    #     interval = celery.schedules.schedule(run_every=5)  # seconds
+    #     entry = RedBeatSchedulerEntry('task-name-2', 'campaigns.tasks.add', interval, args=[5, 2], app=celery_app)
+    #     entry.save()
+    #
+    # @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
+    # def test_redbeat_delete(self):
+    #     from d_campaigns import celery_app
+    #     interval = celery.schedules.schedule(run_every=5)  # seconds
+    #     entry = RedBeatSchedulerEntry('task-name-2', 'campaigns.tasks.add', interval, args=[5, 2], app=celery_app)
+    #     entry.delete()
 
 
 

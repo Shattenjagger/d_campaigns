@@ -1,7 +1,7 @@
 import uuid
 
-from django.db import models
 from django.conf import settings
+from django.db import models
 from recurrence.fields import RecurrenceField
 
 
@@ -15,6 +15,11 @@ class Campaign(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField(null=True)
     recurrence = RecurrenceField()
+
+    # FIXME: Disabled during lack of original code
+    # choice = models.CharField()
+    # segment = models.ForeignKey()
+    # node = models.ForeignKey()
 
     active = models.BooleanField(default=False)
 

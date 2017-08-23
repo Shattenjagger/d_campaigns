@@ -120,3 +120,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/1'
+CELERY_BROKER_POOL_LIMIT = 30
+CELERY_REDBEAT_REDIS_URL = 'redis://localhost:6379/2'
+CELERY_BEAT_MAX_LOOP_INTERVAL = 5
