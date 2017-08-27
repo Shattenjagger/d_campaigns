@@ -8,6 +8,7 @@ from campaigns.serializers import CustomActionSerializer
 class CustomActionViewSet(
     viewsets.ModelViewSet
 ):
+    lookup_field = 'uuid'
     serializer_class = CustomActionSerializer
     permission_classes = [IsAuthenticated, ]
 

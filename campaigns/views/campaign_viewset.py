@@ -10,6 +10,7 @@ from campaigns.serializers import CampaignSerializer
 class CampaignViewSet(
     viewsets.ModelViewSet
 ):
+    lookup_field = 'uuid'
     serializer_class = CampaignSerializer
     permission_classes = [IsAuthenticated, ]
 

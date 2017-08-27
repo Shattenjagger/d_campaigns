@@ -8,6 +8,7 @@ class CampaignSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Campaign
+        lookup_field = 'uuid'
         fields = [
             'id',
             'name',

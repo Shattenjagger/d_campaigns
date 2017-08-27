@@ -61,7 +61,7 @@ class RecurrentSubscribersViewSetTests(APITestCase):
             {
                 'user_id': u.id,
                 'page_id': 0,
-                'subscription_uuid': self.user1_actions[0].id,
+                'subscription_uuid': self.user1_actions[0].uuid,
                 'start': None,
                 'end': None,
                 'created': timezone.now(),
@@ -77,7 +77,7 @@ class RecurrentSubscribersViewSetTests(APITestCase):
             {
                 'user_id': u.id,
                 'page_id': 0,
-                'subscription_uuid': self.user1_campaigns[0].id,
+                'subscription_uuid': self.user1_campaigns[0].uuid,
                 'start': None,
                 'end': None,
                 'created': timezone.now(),
@@ -98,7 +98,7 @@ class RecurrentSubscribersViewSetTests(APITestCase):
             c = CampaignSubscriptionObj(
                 user_id=u.id,
                 page_id=0,
-                subscription_uuid=self.user1_campaigns[0].id,
+                subscription_uuid=self.user1_campaigns[0].uuid,
                 start=None,
                 end=None,
                 created=timezone.now(),
@@ -110,7 +110,7 @@ class RecurrentSubscribersViewSetTests(APITestCase):
             c = CustomActionSubscriptionObj(
                 user_id=u.id,
                 page_id=0,
-                subscription_uuid=self.user1_actions[0].id,
+                subscription_uuid=self.user1_actions[0].uuid,
                 start=None,
                 end=None,
                 created=timezone.now(),
@@ -126,12 +126,12 @@ class RecurrentSubscribersViewSetTests(APITestCase):
 
     def test_should_list_subsribers(self):
         self.client.force_login(user=self.user1)
-        r = self.client.get('/api/campaigns/%s/subscribers/' % self.user1_campaigns[0].id)
+        r = self.client.get('/api/campaigns/%s/subscribers/' % self.user1_campaigns[0].uuid)
 
         assert r.status_code == 200
         assert len(r.json()) == 10
 
-        r = self.client.get('/api/custom_actions/%s/subscribers/' % self.user1_actions[0].id)
+        r = self.client.get('/api/custom_actions/%s/subscribers/' % self.user1_actions[0].uuid)
         assert r.status_code == 200
         assert len(r.json()) == 10
 
@@ -141,7 +141,7 @@ class RecurrentSubscribersViewSetTests(APITestCase):
         obj = {
             'user_id': new_user.id,
             'page_id': 0,
-            'subscription_uuid': self.user1_actions[0].id,
+            'subscription_uuid': self.user1_actions[0].uuid,
             'start': timezone.now(),
             'end': timezone.now(),
             'status': 'active'
@@ -149,23 +149,23 @@ class RecurrentSubscribersViewSetTests(APITestCase):
 
         self.client.force_login(user=self.user1)
 
-        r = self.client.post('/api/custom_actions/%s/subscribers/' % self.user1_actions[0].id, data=obj)
+        r = self.client.post('/api/custom_actions/%s/subscribers/' % self.user1_actions[0].uuid, data=obj)
         assert r.status_code == 201
 
     def test_should_destroy(self):
         self.client.force_login(user=self.user1)
-        r = self.client.delete('/api/custom_actions/%s/subscribers/%s/' % (self.user1_actions[0].id, self.other_users[0].id))
+        r = self.client.delete('/api/custom_actions/%s/subscribers/%s/' % (self.user1_actions[0].uuid, self.other_users[0].id))
         assert r.status_code == 204
 
     def test_should_update(self):
         obj = {
             'page_id': 0,
-            'subscription_uuid': self.user1_actions[0].id,
+            'subscription_uuid': self.user1_actions[0].uuid,
             'start': timezone.now(),
             'end': timezone.now(),
             'status': 'active'
         }
 
         self.client.force_login(user=self.user1)
-        r = self.client.put('/api/custom_actions/%s/subscribers/%s/' % (self.user1_actions[0].id, self.other_users[0].id), data=obj)
+        r = self.client.put('/api/custom_actions/%s/subscribers/%s/' % (self.user1_actions[0].uuid, self.other_users[0].id), data=obj)
         assert r.status_code == 200

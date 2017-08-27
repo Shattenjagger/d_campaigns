@@ -1,10 +1,7 @@
-import celery
 import recurrence
 from django.contrib.auth import get_user_model
-from django.test import override_settings
 from django.utils import timezone
 from recurrence import serialize
-from redbeat import RedBeatSchedulerEntry
 from rest_framework.test import APITestCase
 
 from campaigns.models import Campaign
@@ -149,10 +146,10 @@ class CampaignViewSetTests(APITestCase):
 
     def test_should_get_by_id(self):
         self.client.force_login(user=self.user1)
-        r = self.client.get('/api/campaigns/%s/' % self.user1_campaigns[0].id)
+        r = self.client.get('/api/campaigns/%s/' % self.user1_campaigns[0].uuid)
         assert r.status_code == 200
 
-        r = self.client.get('/api/campaigns/%s/' % self.user2_campaigns[0].id)
+        r = self.client.get('/api/campaigns/%s/' % self.user2_campaigns[0].uuid)
         assert r.status_code == 404
 
     def test_should_edit_campaign(self):
@@ -161,19 +158,19 @@ class CampaignViewSetTests(APITestCase):
             "name": new_name
         }
         self.client.force_login(user=self.user1)
-        r = self.client.patch('/api/campaigns/%s/' % self.user1_campaigns[0].id, data=o)
+        r = self.client.patch('/api/campaigns/%s/' % self.user1_campaigns[0].uuid, data=o)
         assert r.status_code == 200
         assert r.json()['name'] == new_name
 
-        r = self.client.patch('/api/campaigns/%s/' % self.user2_campaigns[0].id, data=o)
+        r = self.client.patch('/api/campaigns/%s/' % self.user2_campaigns[0].uuid, data=o)
         assert r.status_code == 404
 
     def test_should_delete_campaign(self):
         self.client.force_login(user=self.user1)
-        r = self.client.delete('/api/campaigns/%s/' % self.user1_campaigns[0].id)
+        r = self.client.delete('/api/campaigns/%s/' % self.user1_campaigns[0].uuid)
         assert r.status_code == 204
 
-        r = self.client.delete('/api/campaigns/%s/' % self.user1_campaigns[0].id)
+        r = self.client.delete('/api/campaigns/%s/' % self.user1_campaigns[0].uuid)
         assert r.status_code == 404
 
     def test_should_activate(self):
@@ -185,24 +182,24 @@ class CampaignViewSetTests(APITestCase):
         o.save()
 
         self.client.force_login(user=self.user1)
-        r = self.client.get('/api/campaigns/%s/activate/' % self.user1_campaigns[0].id)
+        r = self.client.get('/api/campaigns/%s/activate/' % self.user1_campaigns[0].uuid)
         assert r.status_code == 200
 
         o = Campaign.objects.get(pk=self.user1_campaigns[0].id)
         assert o.active
 
-        r = self.client.get('/api/campaigns/%s/activate/' % self.user2_campaigns[0].id)
+        r = self.client.get('/api/campaigns/%s/activate/' % self.user2_campaigns[0].uuid)
         assert r.status_code == 404
 
     def test_should_deactivate(self):
         self.client.force_login(user=self.user1)
-        r = self.client.get('/api/campaigns/%s/deactivate/' % self.user1_campaigns[0].id)
+        r = self.client.get('/api/campaigns/%s/deactivate/' % self.user1_campaigns[0].uuid)
         assert r.status_code == 200
 
         o = Campaign.objects.get(pk=self.user1_campaigns[0].id)
         assert not o.active
 
-        r = self.client.get('/api/campaigns/%s/deactivate/' % self.user2_campaigns[0].id)
+        r = self.client.get('/api/campaigns/%s/deactivate/' % self.user2_campaigns[0].uuid)
         assert r.status_code == 404
 
         # @override_settings(CELERY_TASK_ALWAYS_EAGER=True)

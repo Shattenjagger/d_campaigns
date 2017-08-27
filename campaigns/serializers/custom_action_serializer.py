@@ -7,6 +7,7 @@ class CustomActionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomAction
+        lookup_field = 'uuid'
         fields = [
             'id',
             'name',

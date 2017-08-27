@@ -26,6 +26,6 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^', include(campaigns_router.urls)),
     url(r'^', include(custom_actions_router.urls)),
-    url(r'^campaigns/(?P<pk>[0-9a-f-]+)/activate/$', campaigns_activate, name='campaigns-activate'),
-    url(r'^campaigns/(?P<pk>[0-9a-f-]+)/deactivate/$', campaigns_deactivate, name='campaigns-deactivate'),
+    url(r'^campaigns/(?P<uuid>[0-9a-f-]+)/activate/$', campaigns_activate, name='campaigns-activate'),
+    url(r'^campaigns/(?P<uuid>[0-9a-f-]+)/deactivate/$', campaigns_deactivate, name='campaigns-deactivate'),
 ]

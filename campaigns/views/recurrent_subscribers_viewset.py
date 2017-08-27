@@ -1,12 +1,9 @@
-import json
-
+from django.conf import settings
 from django.utils import timezone
 from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Search
 from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.conf import settings
 
 from campaigns.doc_types import CustomActionSubscriptionObj, CampaignSubscriptionObj
 
@@ -22,10 +19,10 @@ class RecurrentSubscribersViewSet(
 
     @staticmethod
     def get_index_and_uuid(**kwargs):
-        if 'campaign_pk' in kwargs:
-            return CampaignSubscriptionObj, kwargs['campaign_pk']
-        if 'custom_action_pk' in kwargs:
-            return CustomActionSubscriptionObj, kwargs['custom_action_pk']
+        if 'campaign_uuid' in kwargs:
+            return CampaignSubscriptionObj, kwargs['campaign_uuid']
+        if 'custom_action_uuid' in kwargs:
+            return CustomActionSubscriptionObj, kwargs['custom_action_uuid']
         return None, None
 
     def list(self, request, *args, **kwargs):

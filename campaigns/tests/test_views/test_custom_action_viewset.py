@@ -68,10 +68,10 @@ class CustomActionViewSetTests(APITestCase):
 
     def test_should_get_by_id(self):
         self.client.force_login(user=self.user1)
-        r = self.client.get('/api/custom_actions/%s/' % self.user1_actions[0].id)
+        r = self.client.get('/api/custom_actions/%s/' % self.user1_actions[0].uuid)
         assert r.status_code == 200
 
-        r = self.client.get('/api/custom_actions/%s/' % self.user2_actions[0].id)
+        r = self.client.get('/api/custom_actions/%s/' % self.user2_actions[0].uuid)
         assert r.status_code == 404
 
     def test_should_edit_action(self):
@@ -80,17 +80,17 @@ class CustomActionViewSetTests(APITestCase):
             "name": new_name
         }
         self.client.force_login(user=self.user1)
-        r = self.client.patch('/api/custom_actions/%s/' % self.user1_actions[0].id, data=o)
+        r = self.client.patch('/api/custom_actions/%s/' % self.user1_actions[0].uuid, data=o)
         assert r.status_code == 200
         assert r.json()['name'] == new_name
 
-        r = self.client.patch('/api/custom_actions/%s/' % self.user2_actions[0].id, data=o)
+        r = self.client.patch('/api/custom_actions/%s/' % self.user2_actions[0].uuid, data=o)
         assert r.status_code == 404
 
     def test_should_delete_action(self):
         self.client.force_login(user=self.user1)
-        r = self.client.delete('/api/custom_actions/%s/' % self.user1_actions[0].id)
+        r = self.client.delete('/api/custom_actions/%s/' % self.user1_actions[0].uuid)
         assert r.status_code == 204
 
-        r = self.client.delete('/api/custom_actions/%s/' % self.user2_actions[0].id)
+        r = self.client.delete('/api/custom_actions/%s/' % self.user2_actions[0].uuid)
         assert r.status_code == 404
